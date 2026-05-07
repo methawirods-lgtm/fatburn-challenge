@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FatBurn Challenge 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --em:#22C55E;--em-d:#15803D;--em-l:#DCFCE7;
+  --tl:#14B8A6;--tl-l:#CCFBF1;
+  --or:#FB923C;--or-l:#FED7AA;
+  --bg:#F8FAFC;--sf:#FFFFFF;
+  --tx:#0F172A;--txm:#64748B;--bd:#E2E8F0;
+  --red:#EF4444;--red-l:#FEE2E2;
+  --amber:#F59E0B;--amber-l:#FEF3C7;
+  --r:16px;--rs:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-width:420px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+.scroll-content{flex:1;overflow-y:auto;padding-bottom:80px}
+
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:var(--sf);border-top:1px solid var(--bd);display:flex;z-index:100;padding-bottom:8px}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;cursor:pointer;border:none;background:none;color:var(--txm);font-family:'Outfit',sans-serif;transition:color .2s}
+.ni.active{color:var(--em)}
+.ni svg{width:22px;height:22px;margin-bottom:3px}
+.ni span{font-size:10px;font-weight:600}
+
+.hdr{padding:20px 20px 16px;background:linear-gradient(135deg,#0F172A 0%,#1a2d1a 100%);color:#fff;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(34,197,94,.25) 0%,transparent 70%);border-radius:50%}
+.hdr-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.4);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#86efac;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+.dot{width:6px;height:6px;background:var(--em);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.hdr h1{font-size:24px;font-weight:800;line-height:1.2}
+.hdr h1 span{color:var(--em)}
+.hdr-sub{font-size:13px;color:rgba(255,255,255,.6);margin-top:6px}
+
+.cdb{display:flex;gap:8px;margin-top:14px}
+.cdi{flex:1;background:rgba(255,255,255,.08);border-radius:var(--rs);padding:8px 6px;text-align:center}
+.cdn{font-size:22px;font-weight:800;color:#fff}
+.cdl{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+
+.card{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);margin:0 16px 12px;overflow:hidden}
+.ch{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:13px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.5px}
+.cb{padding:12px 16px 16px}
+
+.hero-banner{
+  width:100%;height:280px;position:relative;
+  background:linear-gradient(160deg,#060d14 0%,#0c1f14 50%,#060d14 100%);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.hb-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(34,197,94,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,0.06) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+}
+.hb-ring-wrap{position:relative;width:220px;height:220px;flex-shrink:0}
+.hb-ring{width:220px;height:220px;display:block}
+.hb-card{
+  position:absolute;display:flex;align-items:center;gap:8px;
+  background:rgba(15,23,42,0.85);border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;padding:8px 12px;backdrop-filter:blur(12px);
+  white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+.hb-card-l{left:-72px;top:50%;animation:floatCard 3s ease-in-out infinite}
+.hb-card-r{right:-72px;top:50%;animation:floatCardR 3s ease-in-out infinite 1s}
+.hb-card-b{bottom:-20px;left:50%;animation:floatCardB 3s ease-in-out infinite .5s}
+@keyframes floatCard{0%,100%{transform:translateY(-50%) translateY(0)}50%{transform:translateY(-50%) translateY(-6px)}}
+@keyframes floatCardB{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
+@keyframes floatCardR{0%,100%{transform:translateY(-50%) translateY(0)}50%{transform:translateY(-50%) translateY(-6px)}}
+.hb-card-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hb-card-val{font-size:13px;font-weight:800;color:#fff;line-height:1.2}
+.hb-card-lbl{font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;margin-top:1px}
+.hb-dots{position:absolute;inset:0;pointer-events:none}
+.hb-dot{position:absolute;width:7px;height:7px;border-radius:50%;animation:dotPulse 2.5s ease-in-out infinite;opacity:0.5}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.8);opacity:0.1}}
+
+.ri{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.ri:last-child{border-bottom:none}
+.rn{min-width:28px;height:28px;background:var(--em-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--em-d)}
+.rt{flex:1}
+.rtt{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.rtd{font-size:12px;color:var(--txm);line-height:1.5}
+
+.prize{background:linear-gradient(135deg,#0F172A,#1e3a1e);border-radius:var(--r);margin:0 16px 12px;padding:20px;position:relative;overflow:hidden}
+.prize::after{content:'🏆';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.2}
+.prize h2{color:#fff;font-size:18px;font-weight:800}
+.prize .amt{color:var(--em);font-size:32px;font-weight:900}
+.prize p{color:rgba(255,255,255,.6);font-size:12px;margin-top:4px}
+
+.formula{background:linear-gradient(135deg,#0F172A,#1e3a1e);border-radius:var(--r);margin:0 16px 12px;padding:16px;border:1px solid rgba(34,197,94,.2)}
+.ft{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.fe{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px}
+.fe span{color:var(--em)}
+.fh{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+
+.rkhdr{padding:20px 16px 8px;background:linear-gradient(135deg,#0F172A 0%,#1a2d1a 100%);color:#fff}
+.rkhdr h2{font-size:22px;font-weight:800}
+.rkhdr p{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px}
+
+/* Live indicator */
+.live-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#86efac;margin-top:6px}
+
+.podrow{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:24px 16px 8px;background:linear-gradient(180deg,#0F172A 0%,#1a2e20 100%)}
+.pi{display:flex;flex-direction:column;align-items:center;flex:1}
+.pav{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;margin-bottom:6px;position:relative;font-family:'Outfit',sans-serif}
+.pav.r1{width:64px;height:64px;font-size:22px}
+.pcrown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:18px}
+.pname{font-size:11px;font-weight:600;color:#fff;text-align:center;max-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pscore{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px}
+.pblk{width:100%;border-radius:8px 8px 0 0;margin-top:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff}
+.pblk.p1{height:64px;background:linear-gradient(180deg,#F59E0B,#D97706)}
+.pblk.p2{height:48px;background:linear-gradient(180deg,#94A3B8,#64748B)}
+.pblk.p3{height:36px;background:linear-gradient(180deg,#FB923C,#EA580C)}
+
+.rrl{padding:0 16px;margin-top:12px}
+.rrw{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sf);border-radius:var(--rs);margin-bottom:8px;border:1px solid var(--bd)}
+.rpos{font-size:16px;font-weight:800;color:var(--txm);min-width:28px;text-align:center}
+.rav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:'Outfit',sans-serif}
+.rinf{flex:1}
+.rnm{font-size:14px;font-weight:700}
+.rdt{font-size:11px;color:var(--txm);margin-top:1px}
+.rsb{text-align:right}
+.rsc{font-size:16px;font-weight:800;color:var(--em-d)}
+.rsl{font-size:9px;color:var(--txm)}
+
+.phero{background:linear-gradient(135deg,#0F172A 0%,#1a2d1a 100%);padding:24px 20px 20px;color:#fff;text-align:center}
+.pav2{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--em),var(--tl));display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin:0 auto 10px;border:3px solid rgba(255,255,255,.2)}
+.pnm{font-size:20px;font-weight:800}
+.ptag{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+
+.str{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:16px 16px 0}
+.sb{background:var(--sf);border-radius:var(--rs);border:1px solid var(--bd);padding:12px 8px;text-align:center}
+.sv{font-size:20px;font-weight:800;color:var(--tx)}
+.sl{font-size:10px;color:var(--txm);margin-top:2px;font-weight:500}
+.sc{font-size:10px;font-weight:600;margin-top:2px}
+.sc.good{color:var(--em-d)}
+.sc.neu{color:var(--txm)}
+.sc.bad{color:var(--red)}
+
+.slbl{font-size:11px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.8px;padding:16px 16px 8px}
+.fr{display:flex;align-items:center;gap:12px;background:var(--sf);padding:14px 16px;border-bottom:1px solid var(--bd)}
+.fr:first-of-type{border-top:1px solid var(--bd)}
+.fi{min-width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.fi svg{width:18px;height:18px}
+.ff{flex:1}
+.fl{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.fh2{font-size:11px;color:var(--txm)}
+.fiw{display:flex;align-items:center;gap:6px}
+.inp{border:1.5px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:15px;font-weight:700;font-family:'Outfit',sans-serif;color:var(--tx);background:var(--bg);width:90px;text-align:right;outline:none;transition:border .2s}
+.inp:focus{border-color:var(--em)}
+.un{font-size:12px;color:var(--txm);font-weight:500}
+
+.btn{border:none;border-radius:14px;padding:15px;font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all .2s;width:100%;display:block}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-em{background:linear-gradient(135deg,var(--em),var(--tl));color:#fff}
+.btn-or{background:linear-gradient(135deg,var(--or),#f97316);color:#fff}
+.btn-red{background:linear-gradient(135deg,var(--red),#dc2626);color:#fff}
+.btn-out{background:transparent;color:var(--em);border:2px solid var(--em)}
+.btn-sm{padding:8px 14px;border-radius:10px;font-size:13px;width:auto;display:inline-block}
+
+.upz{border:2px dashed var(--bd);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin:0 16px 12px}
+.upz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.upz svg{width:36px;height:36px;color:var(--em);margin:0 auto 8px;display:block}
+.upz .ut{font-size:14px;font-weight:700;color:var(--tx)}
+.upz .us{font-size:12px;color:var(--txm);margin-top:4px}
+
+.hi{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--bd)}
+.hdate{min-width:42px;text-align:center;background:var(--em-l);border-radius:8px;padding:4px 6px}
+.hdd{font-size:18px;font-weight:800;color:var(--em-d)}
+.hdm{font-size:9px;color:var(--em-d);text-transform:uppercase;letter-spacing:.5px}
+.hinf{flex:1}
+.htt{font-size:13px;font-weight:700}
+.hts{font-size:11px;color:var(--txm)}
+.hbdg{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--em-l);color:var(--em-d)}
+.imgt{width:48px;height:48px;border-radius:8px;object-fit:cover;border:2px solid var(--bd)}
+
+.bmi-bar{height:8px;border-radius:4px;background:var(--bd);overflow:hidden;margin-top:6px}
+.bmi-fill{height:100%;border-radius:4px;transition:width .6s}
+
+/* Spinner */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Sync indicator */
+.sync-bar{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 16px;font-size:11px;color:var(--txm);background:var(--bg);border-bottom:1px solid var(--bd)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--em);animation:pulse 2s infinite}
+.sync-dot.err{background:var(--red);animation:none}
+.sync-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F172A;color:#fff;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;max-width:320px;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#loading{position:fixed;inset:0;background:#0F172A;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+.llogo{font-size:48px;font-weight:900;color:var(--em);font-family:'Outfit',sans-serif}
+.lsub{font-size:14px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+.lbar{width:160px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:32px;overflow:hidden}
+.lfill{height:100%;background:linear-gradient(90deg,var(--em),var(--tl));animation:load 1.4s ease-out forwards}
+@keyframes load{from{width:0}to{width:100%}}
+
+.adm-hdr{padding:20px 16px 16px;background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff}
+.adm-hdr h2{font-size:22px;font-weight:800}
+.adm-hdr p{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px}
+.adm-stat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:16px 16px 0}
+.adm-sb{background:var(--sf);border-radius:var(--rs);border:1px solid var(--bd);padding:14px;text-align:center}
+.adm-sv{font-size:24px;font-weight:800}
+.adm-sl{font-size:11px;color:var(--txm);margin-top:2px;font-weight:500}
+.adm-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border-bottom:1px solid var(--bd)}
+.adm-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;font-family:'Outfit',sans-serif}
+.adm-inf{flex:1}
+.adm-nm{font-size:14px;font-weight:700}
+.adm-dt{font-size:11px;color:var(--txm)}
+.adm-acts{display:flex;gap:6px}
+.adm-btn{border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.adm-btn:active{transform:scale(.97)}
+.adm-edit{background:var(--em-l);color:var(--em-d)}
+.adm-del{background:var(--red-l);color:#991b1b}
+
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:flex-end;justify-content:center}
+.modal-wrap.open{display:flex}
+.modal{background:var(--sf);border-radius:var(--r) var(--r) 0 0;width:100%;max-width:420px;padding:24px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:16px}
+.modal-row{margin-bottom:14px}
+.modal-lbl{font-size:12px;font-weight:700;color:var(--txm);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.modal-inp{width:100%;border:1.5px solid var(--bd);border-radius:10px;padding:10px 12px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;color:var(--tx);background:var(--bg);outline:none;transition:border .2s}
+.modal-inp:focus{border-color:var(--em)}
+.modal-footer{display:flex;gap:8px;margin-top:20px}
+.modal-footer .btn{flex:1}
+
+.share-hdr{padding:20px 16px 16px;background:linear-gradient(135deg,#0F172A,#1a2d1a);color:#fff}
+.share-hdr h2{font-size:22px;font-weight:800}
+.share-hdr p{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px}
+
+.empty{text-align:center;padding:40px 20px;color:var(--txm)}
+.empty p{font-size:14px;line-height:1.7}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="llogo">🔥 BURN</div><div class="lsub">Fat Loss Challenge 2026</div><div class="lbar"><div class="lfill"></div></div></div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen">
+<div class="scroll-content">
+<div class="hero-banner">
+  <div class="hb-grid"></div>
+  <div class="hb-ring-wrap">
+    <svg class="hb-ring" viewBox="0 0 220 220">
+      <defs>
+        <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#22C55E"/><stop offset="100%" stop-color="#14B8A6"/>
+        </linearGradient>
+        <linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FB923C"/><stop offset="100%" stop-color="#F59E0B"/>
+        </linearGradient>
+        <filter id="gf"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <circle cx="110" cy="110" r="96" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+      <circle cx="110" cy="110" r="96" fill="none" stroke="url(#rg1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="181" transform="rotate(-90 110 110)" filter="url(#gf)">
+        <animate attributeName="stroke-dashoffset" from="603" to="181" dur="1.8s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+      </circle>
+      <circle cx="110" cy="110" r="76" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+      <circle cx="110" cy="110" r="76" fill="none" stroke="url(#rg2)" stroke-width="10" stroke-linecap="round" stroke-dasharray="478" stroke-dashoffset="191" transform="rotate(-90 110 110)" filter="url(#gf)">
+        <animate attributeName="stroke-dashoffset" from="478" to="191" dur="2.2s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+      </circle>
+      <circle cx="110" cy="110" r="56" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+      <circle cx="110" cy="110" r="56" fill="none" stroke="rgba(20,184,166,0.7)" stroke-width="8" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="176" transform="rotate(-90 110 110)">
+        <animate attributeName="stroke-dashoffset" from="352" to="176" dur="2.6s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+      </circle>
+      <text x="110" y="98" text-anchor="middle" font-size="11" font-weight="700" fill="rgba(255,255,255,0.4)" font-family="Outfit,Arial" letter-spacing="1">CHALLENGE</text>
+      <text x="110" y="122" text-anchor="middle" font-size="28" font-weight="900" fill="white" font-family="Outfit,Arial">93</text>
+      <text x="110" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="rgba(255,255,255,0.4)" font-family="Outfit,Arial">days</text>
+    </svg>
+    <div class="hb-card hb-card-l">
+      <div class="hb-card-icon" style="background:linear-gradient(135deg,#22C55E,#15803D)">🔥</div>
+      <div><div class="hb-card-val">%Fat</div><div class="hb-card-lbl">Main Metric</div></div>
+    </div>
+    <div class="hb-card hb-card-r">
+      <div class="hb-card-icon" style="background:linear-gradient(135deg,#FB923C,#EA580C)">🏆</div>
+      <div><div class="hb-card-val" id="hb-prize-val">฿2,000</div><div class="hb-card-lbl">Prize Pool</div></div>
+    </div>
+    <div class="hb-card hb-card-b">
+      <div class="hb-card-icon" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">⚡</div>
+      <div><div class="hb-card-val">Score</div><div class="hb-card-lbl">= cur÷day1×100</div></div>
+    </div>
+  </div>
+  <div class="hb-dots">
+    <span class="hb-dot" style="top:12%;left:8%;animation-delay:0s;background:#22C55E"></span>
+    <span class="hb-dot" style="top:70%;left:6%;animation-delay:.7s;background:#FB923C"></span>
+    <span class="hb-dot" style="top:20%;right:10%;animation-delay:1.2s;background:#14B8A6"></span>
+    <span class="hb-dot" style="top:75%;right:8%;animation-delay:.4s;background:#22C55E"></span>
+    <span class="hb-dot" style="top:50%;left:3%;animation-delay:1.8s;background:#F59E0B;width:5px;height:5px"></span>
+    <span class="hb-dot" style="top:40%;right:4%;animation-delay:2.2s;background:#14B8A6;width:4px;height:4px"></span>
+  </div>
+</div>
+<div class="hdr">
+  <div class="hdr-tag"><div class="dot"></div> LIVE CHALLENGE</div>
+  <h1>FAT LOSS<br><span>CHALLENGE '26</span></h1>
+  <div class="hdr-sub">9 May – 9 Aug 2026 · Prize ฿2,000</div>
+  <div class="cdb">
+    <div class="cdi"><div class="cdn" id="cd-d">--</div><div class="cdl">Days</div></div>
+    <div class="cdi"><div class="cdn" id="cd-h">--</div><div class="cdl">Hours</div></div>
+    <div class="cdi"><div class="cdn" id="cd-m">--</div><div class="cdl">Mins</div></div>
+    <div class="cdi"><div class="cdn" id="cd-s">--</div><div class="cdl">Secs</div></div>
+  </div>
+</div>
+<div style="height:16px"></div>
+<div class="prize">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1">
+    <div>
+      <h2>Winner Takes All</h2>
+      <div class="amt" id="prize-total">฿2,000</div>
+      <p id="prize-sub">Loading...</p>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Participants</div>
+      <div id="prize-count" style="font-size:36px;font-weight:900;color:rgba(255,255,255,.9);line-height:1">0</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px">joined</div>
+    </div>
+  </div>
+  <div style="margin-top:14px;background:rgba(255,255,255,.07);border-radius:8px;overflow:hidden;height:6px;position:relative;z-index:1">
+    <div id="prize-bar" style="height:100%;background:linear-gradient(90deg,#22C55E,#14B8A6);border-radius:8px;transition:width .8s ease;width:0%"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;position:relative;z-index:1">
+    <div style="font-size:10px;color:rgba(255,255,255,.3)">฿2,000 min</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.3)">Open to all · ฿2,000/person</div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch"><div class="ct">📋 Challenge Rules</div></div>
+  <div class="cb">
+    <div class="ri"><div class="rn">1</div><div class="rt"><div class="rtt">Duration</div><div class="rtd">9 May – 9 Aug 2026 (93 days). Log Day 1 stats before 11 May.</div></div></div>
+    <div class="ri"><div class="rn">2</div><div class="rt"><div class="rtt">Winning Metric</div><div class="rtd">Winner = lowest Fat Loss Score = (Current %Fat ÷ Day 1 %Fat) × 100.</div></div></div>
+    <div class="ri"><div class="rn">3</div><div class="rt"><div class="rtt">Tiebreaker</div><div class="rtd">Tied scores → decimal digits decide the winner.</div></div></div>
+    <div class="ri"><div class="rn">4</div><div class="rt"><div class="rtt">Evidence Required</div><div class="rtd">Each update needs a scale photo as proof.</div></div></div>
+    <div class="ri"><div class="rn">5</div><div class="rt"><div class="rtt">Optional Tracking</div><div class="rtd">Weight & % weight loss monitored but not scored.</div></div></div>
+    <div class="ri" style="border:none"><div class="rn">6</div><div class="rt"><div class="rtt">Updates</div><div class="rtd">Update anytime. Latest entry counts for ranking.</div></div></div>
+  </div>
+</div>
+<div class="formula">
+  <div class="ft">⚡ Fat Loss Score Formula</div>
+  <div class="fe"><span>Score</span> = (Current %Fat ÷ Day 1 %Fat) × 100</div>
+  <div class="fh">Lower score = More fat lost = Closer to winning 🏆<br>Tiebreak: more decimal digits lost wins</div>
+</div>
+<div style="padding:0 16px 8px"><button class="btn btn-em" onclick="goTo('profile')">🚀 Join / Update My Stats</button></div>
+</div>
+<div class="bnav"></div>
+</div>
+
+<!-- RANKING -->
+<div id="screen-ranking" class="screen">
+<div class="scroll-content">
+<div class="rkhdr">
+  <h2>🏆 Leaderboard</h2>
+  <p id="rk-sub">Loading…</p>
+  <div class="live-badge"><div class="dot"></div> Live · updates every 5s</div>
+</div>
+<div class="podrow"><div class="pi" id="pod2"></div><div class="pi" id="pod1"></div><div class="pi" id="pod3"></div></div>
+<div class="rrl" id="rk-list" style="padding-top:12px"></div>
+</div>
+<div class="bnav"></div>
+</div>
+
+<!-- PROFILE / SUBMIT -->
+<div id="screen-profile" class="screen">
+<div class="scroll-content">
+<div class="phero">
+  <div class="pav2" id="pav">?</div>
+  <div class="pnm" id="pnm">Your Name</div>
+  <div class="ptag" id="ptag">Not yet registered</div>
+</div>
+
+<!-- Sync status bar -->
+<div class="sync-bar" id="sync-bar">
+  <div class="sync-dot loading" id="sync-dot"></div>
+  <span id="sync-label">Connecting to server…</span>
+</div>
+
+<div class="str">
+  <div class="sb"><div class="sv" id="s-bmi">--</div><div class="sl">BMI</div><div class="sc neu" id="s-bmi-c">—</div></div>
+  <div class="sb"><div class="sv" id="s-fat">--%</div><div class="sl">Body Fat</div><div class="sc good" id="s-fat-c">—</div></div>
+  <div class="sb"><div class="sv" id="s-sc">--</div><div class="sl">Score</div><div class="sc neu" id="s-sc-c">—</div></div>
+</div>
+
+<div class="slbl">Your Details</div>
+<div>
+  <div class="fr"><div class="fi" style="background:#f0fdf4"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="ff"><div class="fl">Full Name</div><div class="fh2">Must match exactly each time</div></div><input type="text" id="i-nm" class="inp" placeholder="Name" style="width:110px;text-align:left;font-weight:500" oninput="onNameInput()"></div>
+  <div class="fr"><div class="fi" style="background:#fef3c7"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M2 12h20"/></svg></div><div class="ff"><div class="fl">Height</div><div class="fh2">Centimeters</div></div><div class="fiw"><input type="number" id="i-ht" class="inp" placeholder="170"><span class="un">cm</span></div></div>
+  <div class="fr"><div class="fi" style="background:#fce7f3"><svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div class="ff"><div class="fl">Age</div><div class="fh2">Years</div></div><div class="fiw"><input type="number" id="i-age" class="inp" placeholder="25"><span class="un">yrs</span></div></div>
+</div>
+
+<div class="slbl">Today's Measurement</div>
+<div>
+  <div class="fr"><div class="fi" style="background:#f0fdf4"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div><div class="ff"><div class="fl">Weight</div><div class="fh2">Current weight</div></div><div class="fiw"><input type="number" id="i-wt" class="inp" placeholder="70.0" step="0.1" oninput="calcBMI()"><span class="un">kg</span></div></div>
+  <div class="fr"><div class="fi" style="background:#ecfdf5"><svg viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></div><div class="ff"><div class="fl">Body Fat %</div><div class="fh2">From scale or device</div></div><div class="fiw"><input type="number" id="i-fat" class="inp" placeholder="25.0" step="0.1"><span class="un">%</span></div></div>
+  <div class="fr" style="background:#f8fafc"><div class="fi" style="background:#eff6ff"><svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg></div><div class="ff"><div class="fl">BMI <span style="font-size:11px;color:var(--txm)">(auto)</span></div><div id="bmi-disp" class="fh2">Enter weight & height</div><div class="bmi-bar"><div id="bmi-fill" class="bmi-fill" style="width:0%;background:var(--em)"></div></div></div><span id="bmi-val" style="font-size:18px;font-weight:800;min-width:48px;text-align:right;color:var(--tx)">--</span></div>
+</div>
+
+<div class="slbl">Photo Evidence</div>
+<div class="upz" id="upz">
+  <input type="file" id="ph-inp" accept="image/*" onchange="handlePhoto(event)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16l4-4a3 3 0 014 0l4 4M14 14l1-1a3 3 0 014 0l1 1M8 12a2 2 0 100-4 2 2 0 000 4"/><rect x="3" y="6" width="18" height="16" rx="3"/></svg>
+  <div class="ut">Add Scale Photo</div>
+  <div class="us">Tap to upload evidence · JPG, PNG</div>
+</div>
+<img id="ph-prev" src="" alt="" style="display:none;width:calc(100% - 32px);margin:0 16px 12px;border-radius:var(--r);max-height:200px;object-fit:cover">
+
+<div style="padding:0 16px 8px"><button class="btn btn-em" id="save-btn" onclick="saveEntry()">💾 Save Entry</button></div>
+
+<div class="slbl" style="margin-top:8px">📊 My History</div>
+<div class="card" style="margin-bottom:12px"><div id="hist-list"><div class="empty"><p>Enter your name above<br>to load your history</p></div></div></div>
+</div>
+<div class="bnav"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="screen-admin" class="screen">
+<div id="adm-lock-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(160deg,#0F172A 0%,#1e1b4b 100%);padding:32px 24px;text-align:center">
+  <div style="font-size:56px;margin-bottom:20px">🔐</div>
+  <h2 style="font-size:26px;font-weight:900;color:#fff;margin-bottom:8px">Admin Access</h2>
+  <p style="font-size:14px;color:rgba(255,255,255,.45);margin-bottom:32px;line-height:1.6">This area is restricted.<br>Enter the password to continue.</p>
+  <div style="width:100%;max-width:300px">
+    <div style="position:relative;margin-bottom:16px">
+      <input id="adm-pw-inp" type="password" placeholder="Enter password"
+        style="width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 52px 16px 18px;font-size:16px;font-family:'Outfit',sans-serif;font-weight:700;color:#fff;outline:none;letter-spacing:3px;text-align:center;transition:border .2s"
+        onkeydown="if(event.key==='Enter')checkAdminPw()"
+        onfocus="this.style.borderColor='rgba(139,92,246,.7)'"
+        onblur="this.style.borderColor='rgba(255,255,255,.15)'"
+      >
+      <button id="adm-eye-btn" onclick="togglePwVis()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:4px">👁️</button>
+    </div>
+    <button onclick="checkAdminPw()" style="width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;cursor:pointer">🔓 Unlock Admin Panel</button>
+    <div id="adm-err" style="font-size:13px;color:#f87171;font-weight:600;margin-top:12px;min-height:20px;opacity:0;transition:opacity .3s">❌ Incorrect password. Try again.</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:24px">Contact the organiser if you forgot the password.</div>
+  </div>
+</div>
+<div id="adm-content" style="display:none;flex:1;flex-direction:column;min-height:100vh">
+  <div class="scroll-content">
+    <div class="adm-hdr">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><h2>⚙️ Admin Panel</h2><p id="adm-sub">Loading…</p></div>
+        <button onclick="lockAdmin()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 14px;color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔒 Lock</button>
+      </div>
+    </div>
+    <div class="adm-stat">
+      <div class="adm-sb"><div class="adm-sv" id="adm-count" style="color:var(--em)">0</div><div class="adm-sl">Participants</div></div>
+      <div class="adm-sb"><div class="adm-sv" id="adm-entries" style="color:var(--tl)">0</div><div class="adm-sl">Total Entries</div></div>
+    </div>
+    <div style="padding:16px 16px 0;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-em btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn btn-or btn-sm" onclick="goTo('share')">🖼️ Share Image</button>
+      <button class="btn btn-out btn-sm" onclick="showAddModal()">➕ Add Participant</button>
+    </div>
+    <div class="slbl" style="margin-top:8px">Participants</div>
+    <div id="adm-list"></div>
+    <div style="height:20px"></div>
+  </div>
+  <div class="bnav"></div>
+</div>
+</div>
+
+<!-- SHARE -->
+<div id="screen-share" class="screen">
+<div class="scroll-content">
+<div class="share-hdr"><h2>🖼️ Share Leaderboard</h2><p>Generate & download a shareable image</p></div>
+<div style="padding:16px 16px 0;display:flex;gap:8px">
+  <button class="btn btn-em btn-sm" onclick="renderShare()">🔄 Generate Image</button>
+  <button class="btn btn-or btn-sm" id="dl-btn" onclick="downloadShare()" style="display:none">⬇️ Download PNG</button>
+</div>
+<div style="padding:16px">
+  <canvas id="share-canvas" style="width:100%;border-radius:12px;border:2px solid rgba(34,197,94,.3)"></canvas>
+</div>
+<div style="padding:0 16px 12px">
+  <div style="background:var(--em-l);border-radius:var(--rs);padding:14px;font-size:13px;color:var(--em-d);font-weight:600">
+    💡 Tap Generate Image, then Download PNG to save. Share to LINE, Instagram, or any app!
+  </div>
+</div>
+</div>
+<div class="bnav"></div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-wrap" id="modal">
+<div class="modal">
+  <div class="modal-title" id="modal-title">Add Participant</div>
+  <input type="hidden" id="modal-uid">
+  <div class="modal-row"><div class="modal-lbl">Full Name</div><input type="text" id="m-nm" class="modal-inp" placeholder="Name"></div>
+  <div class="modal-row"><div class="modal-lbl">Height (cm)</div><input type="number" id="m-ht" class="modal-inp" placeholder="170"></div>
+  <div class="modal-row"><div class="modal-lbl">Age</div><input type="number" id="m-age" class="modal-inp" placeholder="28"></div>
+  <div class="modal-row"><div class="modal-lbl">Weight (kg)</div><input type="number" id="m-wt" class="modal-inp" placeholder="70.0" step="0.1"></div>
+  <div class="modal-row"><div class="modal-lbl">Body Fat %</div><input type="number" id="m-fat" class="modal-inp" placeholder="25.0" step="0.1"></div>
+  <div class="modal-row"><div class="modal-lbl">Entry Date</div><input type="date" id="m-date" class="modal-inp"></div>
+  <div class="modal-footer">
+    <button class="btn btn-out" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-em" id="modal-save-btn" onclick="saveModal()">Save</button>
+  </div>
+</div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-wrap" id="del-modal">
+<div class="modal">
+  <div class="modal-title">Delete Participant?</div>
+  <p style="font-size:14px;color:var(--txm);margin-bottom:20px">This will permanently remove <strong id="del-nm"></strong> and all their entries.</p>
+  <div class="modal-footer">
+    <button class="btn btn-out" onclick="closeDelModal()">Cancel</button>
+    <button class="btn btn-red" id="del-confirm-btn" onclick="confirmDelete()">Delete</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Constants ───────────────────────────────────────────────────────────────
+const COLS=[{bg:'#dcfce7',tx:'#15803d'},{bg:'#dbeafe',tx:'#1d4ed8'},{bg:'#fce7f3',tx:'#9d174d'},{bg:'#fef3c7',tx:'#92400e'},{bg:'#ede9fe',tx:'#5b21b6'},{bg:'#d1fae5',tx:'#065f46'},{bg:'#fee2e2',tx:'#991b1b'},{bg:'#e0f2fe',tx:'#075985'},{bg:'#fef9c3',tx:'#713f12'},{bg:'#f0fdf4',tx:'#166534'}];
+const ADMIN_PW = 'Fatburn2026';
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let participants = [];       // live data from server
+let photoDataURL = null;
+let pendingDeleteKey = null;
+let editingKey = null;
+let adminUnlocked = false;
+let pollTimer = null;
+let lastPollHash = '';
+let currentUserName = localStorage.getItem('fbc_username') || '';
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+const initials = n => n.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'??';
+const col = i => COLS[i % COLS.length];
+const fls = (d1, cur) => !d1||!cur ? null : parseFloat(((cur/d1)*100).toFixed(4));
+const bmiCalc = (w, h) => parseFloat((w/Math.pow(h/100,2)).toFixed(1));
+
+function ranked() {
+  return participants
+    .filter(p => p.entries && p.entries.length > 0)
+    .map(p => {
+      const l = p.entries[p.entries.length-1], f = p.entries[0];
+      return { ...p, latest: l, first: f, score: fls(f.fat, l.fat), fatLost: parseFloat((f.fat - l.fat).toFixed(2)) };
+    })
+    .sort((a,b) => (a.score||999) - (b.score||999));
+}
+
+// ─── API calls ────────────────────────────────────────────────────────────────
+async function fetchParticipants() {
+  try {
+    const res = await fetch('/.netlify/functions/participants', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Server error ' + res.status);
+    const data = await res.json();
+    const hash = JSON.stringify(data.participants.map(p=>({id:p.id,entries:p.entries?.length})));
+    if (hash !== lastPollHash) {
+      lastPollHash = hash;
+      participants = data.participants || [];
+      onDataUpdated();
+    }
+    setSyncStatus('ok', 'Live · synced just now');
+    return true;
+  } catch(e) {
+    setSyncStatus('err', 'Offline · retrying…');
+    return false;
+  }
+}
+
+async function postEntry(payload) {
+  const res = await fetch('/.netlify/functions/participants', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Server error');
+  }
+  return res.json();
+}
+
+async function deleteEntry(key) {
+  const res = await fetch('/.netlify/functions/participant', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ key, adminPassword: ADMIN_PW }),
+  });
+  if (!res.ok) throw new Error('Delete failed');
+  return res.json();
+}
+
+async function adminUpdate(participant) {
+  const res = await fetch('/.netlify/functions/admin-participant', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ participant, adminPassword: ADMIN_PW }),
+  });
+  if (!res.ok) throw new Error('Update failed');
+  return res.json();
+}
+
+// ─── Polling ─────────────────────────────────────────────────────────────────
+function startPolling() {
+  stopPolling();
+  fetchParticipants();
+  pollTimer = setInterval(fetchParticipants, 5000);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// Called whenever participants data changes
+function onDataUpdated() {
+  updateRanking();
+  updatePrizeBanner();
+  if (adminUnlocked) loadAdmin();
+  // Refresh profile history if name is set
+  const name = document.getElementById('i-nm').value.trim() || currentUserName;
+  if (name) refreshProfileStats(name);
+}
+
+// ─── Sync status bar ─────────────────────────────────────────────────────────
+function setSyncStatus(state, label) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if (!dot) return;
+  dot.className = 'sync-dot ' + (state === 'err' ? 'err' : state === 'loading' ? 'loading' : '');
+  lbl.textContent = label;
+}
+
+// ─── BMI calculator ──────────────────────────────────────────────────────────
+function calcBMI() {
+  const w = parseFloat(document.getElementById('i-wt').value);
+  const h = parseFloat(document.getElementById('i-ht').value) / 100;
+  const bv = document.getElementById('bmi-val'), bd = document.getElementById('bmi-disp'), bf = document.getElementById('bmi-fill');
+  if (w && h) {
+    const b = w/(h*h); bv.textContent = b.toFixed(1);
+    let cat, clr, pct;
+    if (b<18.5){cat='Underweight';clr='#3B82F6';pct=20}
+    else if (b<25){cat='Normal';clr='#22C55E';pct=45}
+    else if (b<30){cat='Overweight';clr='#F59E0B';pct=65}
+    else{cat='Obese';clr='#EF4444';pct=85}
+    bd.textContent=cat;bf.style.width=pct+'%';bf.style.background=clr;bv.style.color=clr;
+  } else {
+    bv.textContent='--';bd.textContent='Enter weight & height';bf.style.width='0%';bv.style.color='var(--tx)';
+  }
+}
+
+// ─── Name input → load user profile ─────────────────────────────────────────
+let nameDebounce = null;
+function onNameInput() {
+  clearTimeout(nameDebounce);
+  nameDebounce = setTimeout(() => {
+    const name = document.getElementById('i-nm').value.trim();
+    if (name.length >= 2) refreshProfileStats(name);
+  }, 500);
+}
+
+function refreshProfileStats(name) {
+  const user = participants.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if (!user || !user.entries.length) {
+    document.getElementById('pav').textContent = name ? initials(name) : '?';
+    document.getElementById('pnm').textContent = name || 'Your Name';
+    document.getElementById('ptag').textContent = 'New participant';
+    document.getElementById('s-bmi').textContent = '--';
+    document.getElementById('s-fat').textContent = '--%';
+    document.getElementById('s-sc').textContent = '--';
+    document.getElementById('s-fat-c').textContent = '—';
+    document.getElementById('s-sc-c').textContent = '—';
+    document.getElementById('hist-list').innerHTML = '<div class="empty"><p>No entries yet.<br>Submit your first measurement!</p></div>';
+    return;
+  }
+  const latest = user.entries[user.entries.length-1], first = user.entries[0];
+  document.getElementById('pav').textContent = initials(user.name);
+  document.getElementById('pnm').textContent = user.name;
+  document.getElementById('ptag').textContent = `${user.entries.length} update${user.entries.length!==1?'s':''} · Age ${user.age||'?'} · ${user.height||'?'}cm`;
+  document.getElementById('s-bmi').textContent = latest.bmi || '--';
+  document.getElementById('s-fat').textContent = latest.fat.toFixed(1) + '%';
+  document.getElementById('s-sc').textContent = latest.score ? latest.score.toFixed(2) : '--';
+  const fd = (latest.fat - first.fat).toFixed(1);
+  const fe = document.getElementById('s-fat-c');
+  fe.textContent = (fd < 0 ? '▼ ' : '▲ ') + Math.abs(fd) + '%';
+  fe.className = 'sc ' + (fd < 0 ? 'good' : 'bad');
+  document.getElementById('s-sc-c').textContent = user.entries.length > 1 ? `Day 1: ${first.fat.toFixed(1)}%` : '—';
+  // Pre-fill form fields from server data
+  if (user.height) document.getElementById('i-ht').value = user.height;
+  if (user.age) document.getElementById('i-age').value = user.age;
+
+  const hl = document.getElementById('hist-list');
+  hl.innerHTML = [...user.entries].reverse().map((e,i) => {
+    const d = new Date(e.date);
+    const isFirst = i === user.entries.length - 1;
+    return `<div class="hi">
+      <div class="hdate"><div class="hdd">${d.getDate()}</div><div class="hdm">${d.toLocaleString('en',{month:'short'})}</div></div>
+      ${e.photo ? `<img src="${e.photo}" class="imgt" alt="evidence">` : '<div style="width:48px;height:48px;border-radius:8px;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:20px">📷</div>'}
+      <div class="hinf">
+        <div class="htt">${e.fat.toFixed(1)}% fat · ${e.weight}kg${e.bmi ? ' · BMI '+e.bmi : ''}</div>
+        <div class="hts">${d.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'})}${isFirst?' · <span style="color:#F59E0B;font-weight:700">Day 1</span>':''}</div>
+      </div>
+      <div class="hbdg">${e.score ? e.score.toFixed(2) : '--'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Photo handler ────────────────────────────────────────────────────────────
+function handlePhoto(e) {
+  const f = e.target.files[0]; if (!f) return;
+  // Compress to max ~400px wide before storing
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 480;
+      const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      photoDataURL = canvas.toDataURL('image/jpeg', 0.75);
+      const p = document.getElementById('ph-prev');
+      p.src = photoDataURL; p.style.display = 'block';
+      document.querySelector('#upz .ut').textContent = '✅ Photo Added';
+      document.querySelector('#upz .us').textContent = f.name;
+      showToast('📸 Photo ready!');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+// ─── Save entry ───────────────────────────────────────────────────────────────
+async function saveEntry() {
+  const name = document.getElementById('i-nm').value.trim();
+  const height = parseFloat(document.getElementById('i-ht').value);
+  const age = parseInt(document.getElementById('i-age').value);
+  const weight = parseFloat(document.getElementById('i-wt').value);
+  const fat = parseFloat(document.getElementById('i-fat').value);
+
+  if (!name) { showToast('⚠️ Please enter your name'); return; }
+  if (!height || height < 100 || height > 250) { showToast('⚠️ Enter valid height (100-250cm)'); return; }
+  if (!weight || weight < 30 || weight > 300) { showToast('⚠️ Enter valid weight'); return; }
+  if (!fat || fat < 3 || fat > 70) { showToast('⚠️ Enter valid body fat %'); return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Saving…';
+
+  try {
+    await postEntry({ name, height, age, weight, fat, photo: photoDataURL });
+    currentUserName = name;
+    localStorage.setItem('fbc_username', name);
+    showToast('✅ Entry saved! Great work!');
+
+    // Reset photo
+    photoDataURL = null;
+    document.getElementById('ph-prev').style.display = 'none';
+    document.querySelector('#upz .ut').textContent = 'Add Scale Photo';
+    document.querySelector('#upz .us').textContent = 'Tap to upload evidence · JPG, PNG';
+    document.getElementById('ph-inp').value = '';
+
+    // Immediately re-fetch to show updated data
+    await fetchParticipants();
+  } catch(err) {
+    showToast('❌ ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '💾 Save Entry';
+  }
+}
+
+// ─── Ranking ─────────────────────────────────────────────────────────────────
+function updateRanking() {
+  const r = ranked();
+  const medals = ['🥇','🥈','🥉'];
+
+  function podHTML(p, rank) {
+    if (!p) return `<div style="color:rgba(255,255,255,.2);padding:20px;text-align:center;font-size:24px">?</div>`;
+    const c = col(p.colorIdx || 0);
+    const blockH = ['p1','p2','p3'][rank-1];
+    return `${rank===1?'<div class="pcrown">👑</div>':''}
+      <div class="pav r${rank}" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
+      <div class="pname">${p.name}</div>
+      <div class="pscore">${p.score ? p.score.toFixed(2) : '--'}</div>
+      <div class="pblk ${blockH}">${medals[rank-1]}</div>`;
+  }
+
+  document.getElementById('pod1').innerHTML = podHTML(r[0], 1);
+  document.getElementById('pod2').innerHTML = podHTML(r[1], 2);
+  document.getElementById('pod3').innerHTML = podHTML(r[2], 3);
+
+  const ll = document.getElementById('rk-list');
+  if (r.length === 0) {
+    ll.innerHTML = '<div class="empty"><p>No participants yet.<br>Be the first to join!</p></div>';
+  } else {
+    ll.innerHTML = r.slice(3).map((p,i) => {
+      const c = col(p.colorIdx || 0);
+      return `<div class="rrw">
+        <div class="rpos">${i+4}</div>
+        <div class="rav" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
+        <div class="rinf"><div class="rnm">${p.name}</div><div class="rdt">${p.latest.fat.toFixed(1)}% fat · ${p.fatLost>0?'▼ '+p.fatLost.toFixed(1)+'%':'No change'}</div></div>
+        <div class="rsb"><div class="rsc">${p.score ? p.score.toFixed(2) : '--'}</div><div class="rsl">SCORE</div></div>
+      </div>`;
+    }).join('');
+    if (r.length <= 3) ll.innerHTML += '<div style="padding:16px;text-align:center;font-size:13px;color:var(--txm)">More participants needed for full ranking</div>';
+  }
+  document.getElementById('rk-sub').textContent = `${r.length} participant${r.length!==1?'s':''} · Live`;
+}
+
+// ─── Prize banner ─────────────────────────────────────────────────────────────
+function updatePrizeBanner() {
+  const count = participants.filter(p => p.entries && p.entries.length > 0).length;
+  const total = Math.max(count, 1) * 2000;
+  document.getElementById('prize-total').textContent = '฿' + total.toLocaleString();
+  document.getElementById('prize-count').textContent = count;
+  document.getElementById('prize-sub').textContent = count + ' participant' + (count!==1?'s':'') + ' · ฿2,000/person';
+  document.getElementById('prize-bar').style.width = count > 0 ? '100%' : '0%';
+  const hb = document.getElementById('hb-prize-val');
+  if (hb) hb.textContent = '฿' + total.toLocaleString();
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+function checkAdminPw() {
+  const inp = document.getElementById('adm-pw-inp');
+  const err = document.getElementById('adm-err');
+  if (inp.value === ADMIN_PW) {
+    adminUnlocked = true; inp.value = ''; err.style.opacity = '0';
+    document.getElementById('adm-lock-screen').style.display = 'none';
+    document.getElementById('adm-content').style.display = 'flex';
+    loadAdmin();
+  } else {
+    err.style.opacity = '1';
+    inp.style.animation = 'none';
+    setTimeout(() => { inp.style.animation = 'shake .4s ease'; }, 10);
+    setTimeout(() => { err.style.opacity = '0'; }, 3000);
+  }
+}
+
+function lockAdmin() {
+  adminUnlocked = false;
+  document.getElementById('adm-content').style.display = 'none';
+  document.getElementById('adm-lock-screen').style.display = 'flex';
+  document.getElementById('adm-pw-inp').value = '';
+  showToast('🔒 Admin locked');
+}
+
+function togglePwVis() {
+  const inp = document.getElementById('adm-pw-inp');
+  const btn = document.getElementById('adm-eye-btn');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+function loadAdmin() {
+  const r = ranked();
+  const totalEntries = participants.reduce((s,p) => s + (p.entries?p.entries.length:0), 0);
+  document.getElementById('adm-count').textContent = participants.length;
+  document.getElementById('adm-entries').textContent = totalEntries;
+  document.getElementById('adm-sub').textContent = `${participants.length} participants · ${totalEntries} total entries`;
+
+  const al = document.getElementById('adm-list');
+  if (!participants.length) { al.innerHTML = '<div class="empty"><p>No participants yet</p></div>'; return; }
+  al.innerHTML = participants.map(p => {
+    const c = col(p.colorIdx || 0);
+    const latest = p.entries?.length ? p.entries[p.entries.length-1] : null;
+    const first = p.entries?.length ? p.entries[0] : null;
+    const sc = latest && first ? fls(first.fat, latest.fat) : null;
+    return `<div class="adm-row">
+      <div class="adm-av" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
+      <div class="adm-inf">
+        <div class="adm-nm">${p.name}</div>
+        <div class="adm-dt">${p.entries?.length||0} entries · ${latest ? latest.fat.toFixed(1)+'% fat' : 'No data'} · Score: ${sc ? sc.toFixed(2) : '--'}</div>
+      </div>
+      <div class="adm-acts">
+        <button class="adm-btn adm-edit" onclick="editParticipant('${p.id}')">Edit</button>
+        <button class="adm-btn adm-del" onclick="deleteParticipant('${p.id}','${p.name}')">Del</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showAddModal() {
+  editingKey = null;
+  document.getElementById('modal-title').textContent = 'Add Participant';
+  document.getElementById('modal-uid').value = '';
+  ['m-nm','m-ht','m-age','m-wt','m-fat'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('modal').classList.add('open');
+}
+
+function editParticipant(key) {
+  const p = participants.find(x => x.id === key); if (!p) return;
+  editingKey = key;
+  document.getElementById('modal-title').textContent = 'Add Entry for ' + p.name;
+  document.getElementById('modal-uid').value = key;
+  document.getElementById('m-nm').value = p.name;
+  document.getElementById('m-ht').value = p.height || '';
+  document.getElementById('m-age').value = p.age || '';
+  const l = p.entries?.length ? p.entries[p.entries.length-1] : null;
+  document.getElementById('m-wt').value = l ? l.weight : '';
+  document.getElementById('m-fat').value = l ? l.fat : '';
+  document.getElementById('m-date').value = l ? l.date.split('T')[0] : new Date().toISOString().split('T')[0];
+  document.getElementById('modal').classList.add('open');
+}
+
+async function saveModal() {
+  const name = document.getElementById('m-nm').value.trim();
+  const height = parseFloat(document.getElementById('m-ht').value);
+  const age = parseInt(document.getElementById('m-age').value);
+  const weight = parseFloat(document.getElementById('m-wt').value);
+  const fat = parseFloat(document.getElementById('m-fat').value);
+  const dateStr = document.getElementById('m-date').value;
+  if (!name || !weight || !fat) { showToast('⚠️ Fill in all required fields'); return; }
+
+  const btn = document.getElementById('modal-save-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving…';
+
+  try {
+    // Use the public API — admin can also push entries this way
+    await postEntry({ name, height, age, weight, fat, photo: null });
+    showToast('✅ Entry saved!');
+    closeModal();
+    await fetchParticipants();
+  } catch(err) {
+    showToast('❌ ' + err.message);
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Save';
+  }
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function deleteParticipant(key, name) {
+  pendingDeleteKey = key;
+  document.getElementById('del-nm').textContent = name;
+  document.getElementById('del-modal').classList.add('open');
+}
+
+function closeDelModal() {
+  document.getElementById('del-modal').classList.remove('open');
+  pendingDeleteKey = null;
+}
+
+async function confirmDelete() {
+  if (!pendingDeleteKey) return;
+  const btn = document.getElementById('del-confirm-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Deleting…';
+  try {
+    await deleteEntry(pendingDeleteKey);
+    closeDelModal();
+    await fetchParticipants();
+    showToast('🗑️ Participant removed');
+  } catch(err) {
+    showToast('❌ ' + err.message);
+    btn.disabled = false; btn.innerHTML = 'Delete';
+  }
+}
+
+// ─── Export CSV ──────────────────────────────────────────────────────────────
+function exportCSV() {
+  const r = ranked();
+  if (!r.length) { showToast('⚠️ No data to export'); return; }
+  const rows = [['Rank','Name','Age','Height(cm)','Day1 Fat%','Day1 Weight','Latest Fat%','Latest Weight','Latest BMI','Fat Lost %','Score','Entries']];
+  r.forEach((p,i) => {
+    rows.push([i+1,p.name,p.age||'',p.height||'',p.first.fat.toFixed(1),p.first.weight,p.latest.fat.toFixed(1),p.latest.weight,p.latest.bmi||'',p.fatLost.toFixed(2),p.score?p.score.toFixed(4):'',p.entries.length]);
+  });
+  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' }));
+  a.download = 'fat_challenge_results.csv'; a.click();
+  showToast('📥 CSV downloaded!');
+}
+
+// ─── Share image ──────────────────────────────────────────────────────────────
+function renderShare() {
+  const r = ranked();
+  if (!r.length) { showToast('⚠️ No data to generate'); return; }
+  const canvas = document.getElementById('share-canvas');
+  const W = 800, H = Math.max(600, 200 + r.length*70 + 80);
+  canvas.width = W; canvas.height = H; canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0F172A'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#22C55E'; ctx.fillRect(0,0,W,6);
+  ctx.fillStyle = '#22C55E'; ctx.font = 'bold 42px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('🔥 FAT LOSS CHALLENGE 2026', W/2, 70);
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '20px Arial';
+  ctx.fillText('9 May – 9 Aug 2026  ·  Prize ฿2,000', W/2, 105);
+  ctx.fillStyle = 'rgba(34,197,94,0.15)'; roundRect(ctx,40,130,W-80,44,8); ctx.fill();
+  ctx.fillStyle = '#86efac'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
+  ctx.fillText('RANK',60,158); ctx.fillText('NAME',130,158);
+  ctx.textAlign = 'center';
+  ctx.fillText('FAT %',460,158); ctx.fillText('SCORE',580,158); ctx.fillText('LOST',700,158);
+  const medals = ['🥇','🥈','🥉'];
+  r.forEach((p,i) => {
+    const y = 190 + i*66;
+    ctx.fillStyle = i<3 ? `rgba(34,197,94,${0.08-i*0.02})` : 'rgba(255,255,255,0.03)';
+    roundRect(ctx,40,y,W-80,58,8); ctx.fill();
+    ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(i<3 ? medals[i] : `${i+1}`, 80, y+36);
+    const c = col(p.colorIdx||0);
+    ctx.fillStyle = c.bg; beginCircle(ctx,130,y+29,22); ctx.fill();
+    ctx.fillStyle = c.tx; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(initials(p.name), 130, y+34);
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'left';
+    ctx.fillText(p.name.slice(0,16), 162, y+25);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '13px Arial';
+    ctx.fillText(`${p.entries.length} entries · BMI ${p.latest.bmi||'?'}`, 162, y+46);
+    ctx.fillStyle = i===0 ? '#22C55E' : '#86efac'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(p.latest.fat.toFixed(1)+'%', 460, y+36);
+    ctx.fillStyle = i===0 ? '#FB923C' : 'rgba(255,255,255,0.8)';
+    ctx.fillText(p.score ? p.score.toFixed(2) : '--', 580, y+36);
+    ctx.fillStyle = p.fatLost>0 ? '#22C55E' : 'rgba(255,255,255,0.5)';
+    ctx.fillText((p.fatLost>0?'▼':'')+p.fatLost.toFixed(1)+'%', 700, y+36);
+  });
+  ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
+  ctx.fillText(`Generated ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`, W/2, H-20);
+  document.getElementById('dl-btn').style.display = 'inline-block';
+  showToast('✅ Image generated!');
+}
+
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+function beginCircle(ctx,x,y,r){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);}
+
+function downloadShare() {
+  const canvas = document.getElementById('share-canvas');
+  const a = document.createElement('a');
+  a.download = 'fat_challenge_leaderboard.png';
+  a.href = canvas.toDataURL('image/png'); a.click();
+  showToast('📸 Image downloaded!');
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+const NAV = [
+  {id:'home',label:'Home',icon:'<path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/>'},
+  {id:'ranking',label:'Ranking',icon:'<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>'},
+  {id:'profile',label:'My Stats',icon:'<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>'},
+  {id:'admin',label:'Admin',icon:'<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>'},
+  {id:'share',label:'Share',icon:'<path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>'}
+];
+
+function buildNav(activeId) {
+  const html = NAV.map(n => `<button class="ni ${n.id===activeId?'active':''}" onclick="goTo('${n.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${n.icon}</svg><span>${n.label}</span></button>`).join('');
+  document.querySelectorAll('.bnav').forEach(el => el.innerHTML = html);
+}
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  buildNav(id);
+  if (id === 'admin') {
+    if (adminUnlocked) {
+      document.getElementById('adm-lock-screen').style.display = 'none';
+      document.getElementById('adm-content').style.display = 'flex';
+      loadAdmin();
+    } else {
+      document.getElementById('adm-lock-screen').style.display = 'flex';
+      document.getElementById('adm-content').style.display = 'none';
+    }
+  }
+  if (id === 'profile' && currentUserName) {
+    document.getElementById('i-nm').value = currentUserName;
+    refreshProfileStats(currentUserName);
+  }
+  window.scrollTo(0, 0);
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Countdown ────────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const end = new Date('2026-08-09T23:59:59');
+  let diff = Math.max(0, end - new Date());
+  const d = Math.floor(diff/86400000); diff -= d*86400000;
+  const h = Math.floor(diff/3600000); diff -= h*3600000;
+  const m = Math.floor(diff/60000); diff -= m*60000;
+  const s = Math.floor(diff/1000);
+  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('home');
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Start fetching real data
+  startPolling();
+
+  setTimeout(() => {
+    document.getElementById('loading').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      goTo('home');
+    }, 500);
+  }, 1400);
+});
+
+// Stop polling when tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopPolling();
+  else startPolling();
+});
+</script>
+</body>
+</html>
