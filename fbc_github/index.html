@@ -337,7 +337,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-wi
   <div class="ch"><div class="ct">📋 Challenge Rules</div></div>
   <div class="cb">
     <div class="ri"><div class="rn">1</div><div class="rt"><div class="rtt">Duration</div><div class="rtd">9 May – 9 Aug 2026 (93 days). Log Day 1 stats before 11 May.</div></div></div>
-    <div class="ri"><div class="rn">2</div><div class="rt"><div class="rtt">Winning Metric</div><div class="rtd">Winner = lowest Fat Loss Score = (Current %Fat ÷ Day 1 %Fat) × 100.</div></div></div>
+    <div class="ri"><div class="rn">2</div><div class="rt"><div class="rtt">Winning Metric</div><div class="rtd">Winner = most negative % Fat Change = (New %Fat − Day 1 %Fat) ÷ Day 1 %Fat × 100.</div></div></div>
     <div class="ri"><div class="rn">3</div><div class="rt"><div class="rtt">Tiebreaker</div><div class="rtd">Tied scores → decimal digits decide the winner.</div></div></div>
     <div class="ri"><div class="rn">4</div><div class="rt"><div class="rtt">Evidence Required</div><div class="rtd">Each update needs a scale photo as proof.</div></div></div>
     <div class="ri"><div class="rn">5</div><div class="rt"><div class="rtt">Optional Tracking</div><div class="rtd">Weight & % weight loss monitored but not scored.</div></div></div>
@@ -345,9 +345,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-wi
   </div>
 </div>
 <div class="formula">
-  <div class="ft">⚡ Fat Loss Score Formula</div>
-  <div class="fe"><span>Score</span> = (Current %Fat ÷ Day 1 %Fat) × 100</div>
-  <div class="fh">Lower score = More fat lost = Closer to winning 🏆<br>Tiebreak: more decimal digits lost wins</div>
+  <div class="ft">⚡ Percent Fat Change Formula</div>
+  <div class="fe"><span>% Change</span> = (New %Fat − Day 1 %Fat) ÷ Day 1 %Fat × 100</div>
+  <div class="fh">Most negative score = Most fat lost = Winner 🏆<br>e.g. Day1: 30% → Now: 25% = −16.67% change</div>
 </div>
 <div style="padding:0 16px 8px"><button class="btn btn-em" onclick="goTo('profile')">🚀 Join / Update My Stats</button></div>
 </div>
@@ -386,7 +386,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-wi
 <div class="str">
   <div class="sb"><div class="sv" id="s-bmi">--</div><div class="sl">BMI</div><div class="sc neu" id="s-bmi-c">—</div></div>
   <div class="sb"><div class="sv" id="s-fat">--%</div><div class="sl">Body Fat</div><div class="sc good" id="s-fat-c">—</div></div>
-  <div class="sb"><div class="sv" id="s-sc">--</div><div class="sl">Score</div><div class="sc neu" id="s-sc-c">—</div></div>
+  <div class="sb"><div class="sv" id="s-sc">--</div><div class="sl">% Change</div><div class="sc neu" id="s-sc-c">—</div></div>
 </div>
 
 <div class="slbl">Your Details</div>
@@ -536,7 +536,8 @@ let currentUserName = localStorage.getItem('fbc_username') || '';
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const initials = n => n.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'??';
 const col = i => COLS[i % COLS.length];
-const fls = (d1, cur) => !d1||!cur ? null : parseFloat(((cur/d1)*100).toFixed(4));
+// Percent Fat Change = (New - Old) / Old * 100  (negative = fat lost = good)
+const fls = (d1, cur) => !d1||!cur ? null : parseFloat((((cur - d1) / d1) * 100).toFixed(4));
 const bmiCalc = (w, h) => parseFloat((w/Math.pow(h/100,2)).toFixed(1));
 
 function ranked() {
@@ -546,7 +547,7 @@ function ranked() {
       const l = p.entries[p.entries.length-1], f = p.entries[0];
       return { ...p, latest: l, first: f, score: fls(f.fat, l.fat), fatLost: parseFloat((f.fat - l.fat).toFixed(2)) };
     })
-    .sort((a,b) => (a.score||999) - (b.score||999));
+    .sort((a,b) => (a.score ?? 999) - (b.score ?? 999));
 }
 
 // ─── API calls ────────────────────────────────────────────────────────────────
@@ -680,7 +681,7 @@ function refreshProfileStats(name) {
   document.getElementById('ptag').textContent = `${user.entries.length} update${user.entries.length!==1?'s':''} · Age ${user.age||'?'} · ${user.height||'?'}cm`;
   document.getElementById('s-bmi').textContent = latest.bmi || '--';
   document.getElementById('s-fat').textContent = latest.fat.toFixed(1) + '%';
-  document.getElementById('s-sc').textContent = latest.score ? latest.score.toFixed(2) : '--';
+  document.getElementById('s-sc').textContent = latest.score !== null ? (latest.score > 0 ? '+' : '') + latest.score.toFixed(2) + '%' : '--';
   const fd = (latest.fat - first.fat).toFixed(1);
   const fe = document.getElementById('s-fat-c');
   fe.textContent = (fd < 0 ? '▼ ' : '▲ ') + Math.abs(fd) + '%';
@@ -784,7 +785,7 @@ function updateRanking() {
     return `${rank===1?'<div class="pcrown">👑</div>':''}
       <div class="pav r${rank}" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
       <div class="pname">${p.name}</div>
-      <div class="pscore">${p.score ? p.score.toFixed(2) : '--'}</div>
+      <div class="pscore">${p.score !== null ? (p.score > 0 ? '+' : '') + p.score.toFixed(2) + '%' : '--'}</div>
       <div class="pblk ${blockH}">${medals[rank-1]}</div>`;
   }
 
@@ -802,7 +803,7 @@ function updateRanking() {
         <div class="rpos">${i+4}</div>
         <div class="rav" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
         <div class="rinf"><div class="rnm">${p.name}</div><div class="rdt">${p.latest.fat.toFixed(1)}% fat · ${p.fatLost>0?'▼ '+p.fatLost.toFixed(1)+'%':'No change'}</div></div>
-        <div class="rsb"><div class="rsc">${p.score ? p.score.toFixed(2) : '--'}</div><div class="rsl">SCORE</div></div>
+        <div class="rsb"><div class="rsc">${p.score !== null ? (p.score > 0 ? '+' : '') + p.score.toFixed(2) + '%' : '--'}</div><div class="rsl">% CHANGE</div></div>
       </div>`;
     }).join('');
     if (r.length <= 3) ll.innerHTML += '<div style="padding:16px;text-align:center;font-size:13px;color:var(--txm)">More participants needed for full ranking</div>';
@@ -872,7 +873,7 @@ function loadAdmin() {
       <div class="adm-av" style="background:${c.bg};color:${c.tx}">${initials(p.name)}</div>
       <div class="adm-inf">
         <div class="adm-nm">${p.name}</div>
-        <div class="adm-dt">${p.entries?.length||0} entries · ${latest ? latest.fat.toFixed(1)+'% fat' : 'No data'} · Score: ${sc ? sc.toFixed(2) : '--'}</div>
+        <div class="adm-dt">${p.entries?.length||0} entries · ${latest ? latest.fat.toFixed(1)+'% fat' : 'No data'} · Change: ${sc !== null ? (sc > 0 ? '+' : '') + sc.toFixed(2) + '%' : '--'}</div>
       </div>
       <div class="adm-acts">
         <button class="adm-btn adm-edit" onclick="editParticipant('${p.id}')">Edit</button>
@@ -965,7 +966,7 @@ function exportCSV() {
   if (!r.length) { showToast('⚠️ No data to export'); return; }
   const rows = [['Rank','Name','Age','Height(cm)','Day1 Fat%','Day1 Weight','Latest Fat%','Latest Weight','Latest BMI','Fat Lost %','Score','Entries']];
   r.forEach((p,i) => {
-    rows.push([i+1,p.name,p.age||'',p.height||'',p.first.fat.toFixed(1),p.first.weight,p.latest.fat.toFixed(1),p.latest.weight,p.latest.bmi||'',p.fatLost.toFixed(2),p.score?p.score.toFixed(4):'',p.entries.length]);
+    rows.push([i+1,p.name,p.age||'',p.height||'',p.first.fat.toFixed(1),p.first.weight,p.latest.fat.toFixed(1),p.latest.weight,p.latest.bmi||'',p.fatLost.toFixed(2),p.score!==null?p.score.toFixed(4)+'%':'',p.entries.length]);
   });
   const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const a = document.createElement('a');
@@ -992,7 +993,7 @@ function renderShare() {
   ctx.fillStyle = '#86efac'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
   ctx.fillText('RANK',60,158); ctx.fillText('NAME',130,158);
   ctx.textAlign = 'center';
-  ctx.fillText('FAT %',460,158); ctx.fillText('SCORE',580,158); ctx.fillText('LOST',700,158);
+  ctx.fillText('FAT %',460,158); ctx.fillText('% CHANGE',580,158); ctx.fillText('LOST',700,158);
   const medals = ['🥇','🥈','🥉'];
   r.forEach((p,i) => {
     const y = 190 + i*66;
@@ -1011,7 +1012,7 @@ function renderShare() {
     ctx.fillStyle = i===0 ? '#22C55E' : '#86efac'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
     ctx.fillText(p.latest.fat.toFixed(1)+'%', 460, y+36);
     ctx.fillStyle = i===0 ? '#FB923C' : 'rgba(255,255,255,0.8)';
-    ctx.fillText(p.score ? p.score.toFixed(2) : '--', 580, y+36);
+    ctx.fillText(p.score !== null ? (p.score > 0 ? '+' : '') + p.score.toFixed(2) + '%' : '--', 580, y+36);
     ctx.fillStyle = p.fatLost>0 ? '#22C55E' : 'rgba(255,255,255,0.5)';
     ctx.fillText((p.fatLost>0?'▼':'')+p.fatLost.toFixed(1)+'%', 700, y+36);
   });
