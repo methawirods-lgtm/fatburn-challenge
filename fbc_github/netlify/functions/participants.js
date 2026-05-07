@@ -102,7 +102,9 @@ exports.handler = async (event) => {
 
       const bmi = height ? parseFloat((weight / Math.pow(height / 100, 2)).toFixed(1)) : null;
       const d1fat = participant.entries.length > 0 ? participant.entries[0].fat : fat;
-      const score = parseFloat(((fat / d1fat) * 100).toFixed(4));
+      // Percent Fat Change = (New - Old) / Old * 100
+      // Negative = fat lost (good), Positive = fat gained (bad)
+      const score = parseFloat((((fat - d1fat) / d1fat) * 100).toFixed(4));
 
       participant.entries.push({
         date: new Date().toISOString(),
