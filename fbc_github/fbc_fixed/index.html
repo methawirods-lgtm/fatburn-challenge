@@ -303,7 +303,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-wi
 <div class="hdr">
   <div class="hdr-tag"><div class="dot"></div> LIVE CHALLENGE</div>
   <h1>FAT LOSS<br><span>CHALLENGE '26</span></h1>
-  <div class="hdr-sub">9 May – 9 Aug 2026 · Prize ฿2,000</div>
+  <div class="hdr-sub">9 May – 9 Oct 2026 · Prize ฿2,000</div>
   <div class="cdb">
     <div class="cdi"><div class="cdn" id="cd-d">--</div><div class="cdl">Days</div></div>
     <div class="cdi"><div class="cdn" id="cd-h">--</div><div class="cdl">Hours</div></div>
@@ -336,7 +336,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);max-wi
 <div class="card">
   <div class="ch"><div class="ct">📋 Challenge Rules</div></div>
   <div class="cb">
-    <div class="ri"><div class="rn">1</div><div class="rt"><div class="rtt">Duration</div><div class="rtd">9 May – 9 Aug 2026 (93 days). Log Day 1 stats before 11 May.</div></div></div>
+    <div class="ri"><div class="rn">1</div><div class="rt"><div class="rtt">Duration</div><div class="rtd">9 May – 9 Oct 2026 (153 days). Log Day 1 stats before 11 May.</div></div></div>
     <div class="ri"><div class="rn">2</div><div class="rt"><div class="rtt">Winning Metric</div><div class="rtd">Winner = most negative % Fat Change = (New %Fat − Day 1 %Fat) ÷ Day 1 %Fat × 100.</div></div></div>
     <div class="ri"><div class="rn">3</div><div class="rt"><div class="rtt">Tiebreaker</div><div class="rtd">Tied scores → decimal digits decide the winner.</div></div></div>
     <div class="ri"><div class="rn">4</div><div class="rt"><div class="rtt">Evidence Required</div><div class="rtd">Each update needs a scale photo as proof.</div></div></div>
@@ -988,7 +988,7 @@ function renderShare() {
   ctx.fillStyle = '#22C55E'; ctx.font = 'bold 42px Arial'; ctx.textAlign = 'center';
   ctx.fillText('🔥 FAT LOSS CHALLENGE 2026', W/2, 70);
   ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '20px Arial';
-  ctx.fillText('9 May – 9 Aug 2026  ·  Prize ฿2,000', W/2, 105);
+  ctx.fillText('9 May – 9 Oct 2026  ·  Prize ฿2,000', W/2, 105);
   ctx.fillStyle = 'rgba(34,197,94,0.15)'; roundRect(ctx,40,130,W-80,44,8); ctx.fill();
   ctx.fillStyle = '#86efac'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
   ctx.fillText('RANK',60,158); ctx.fillText('NAME',130,158);
@@ -1077,7 +1077,7 @@ function showToast(msg) {
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 function updateCountdown() {
-  const end = new Date('2026-08-09T23:59:59');
+  const end = new Date('2026-10-09T23:59:59');
   let diff = Math.max(0, end - new Date());
   const d = Math.floor(diff/86400000); diff -= d*86400000;
   const h = Math.floor(diff/3600000); diff -= h*3600000;
